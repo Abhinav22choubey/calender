@@ -19,7 +19,7 @@ export default function CalendarContainer() {
                 absolute 
                 left-1/2 -translate-x-1/2 
                 top-2 -translate-y-[65%]  
-                w-[70%] max-w-[600px] 
+                w-[50%] max-w-[600px] 
                 z-20 
                 pointer-events-none 
                 select-none
@@ -27,7 +27,7 @@ export default function CalendarContainer() {
             />
 
         {/* Calendar Body */}
-        <div className="w-full bg-white shadow-2xl rounded-b-xl border border-gray-200 relative overflow-visible">
+        <div className="w-full md:w-[50%] left-60 bg-white shadow-2xl rounded-b-xl border border-gray-200 relative overflow-visible">
           {/* Paper depth */}
           <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent via-transparent to-black/5"></div>
 
