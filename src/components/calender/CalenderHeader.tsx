@@ -1,6 +1,6 @@
 export default function CalendarHeader() {
   return (
-    <div className="relative w-full h-96">
+    <div className="relative w-full h-96 overflow-hidden">
       {/* SVG clip (triangle with rounded tip) */}
       <svg width="0" height="0">
         <defs>
@@ -10,13 +10,9 @@ export default function CalendarHeader() {
               M 0 0
               L 1 0
               L 1 0.5
-
               L 0.56 0.90
-
               Q 0.47 0.97 0.42 0.93
-
               L 0 0.7
-
               Z
             "
             />
@@ -25,8 +21,9 @@ export default function CalendarHeader() {
       </svg>
 
       {/* IMAGE */}
+      {/* IMAGE */}
       <div
-        className="w-full h-full overflow-hidden  shadow-xl"
+        className="w-full z-10 h-full overflow-hidden shadow-xl relative"
         style={{ clipPath: "url(#Triangle)" }}
       >
         <img
@@ -37,12 +34,11 @@ export default function CalendarHeader() {
 
       {/* LEFT BLUE */}
       <div
-        className="absolute bottom-0 left-0 w-1/3 h-28 bg-blue-500"
+        className="absolute z-0 bottom-2 left-0 w-32 h-32 bg-blue-500 rotate-90"
         style={{
-          clipPath: "polygon(0 100%, 0 30%, 100% 100%)",
+          clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)",
         }}
       />
-
       {/* RIGHT BLUE */}
       <div
         className="absolute bottom-0 right-0 w-1/3 h-28 bg-blue-500 flex items-end justify-end p-4 text-white"
