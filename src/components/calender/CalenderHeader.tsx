@@ -34,19 +34,17 @@ export default function CalendarHeader() {
 
       {/* LEFT BLUE */}
       <div
-        className="absolute z-0 bottom-2 left-0 w-32 h-32 bg-blue-500 rotate-90"
+        className="absolute z-0 bottom-2 left-0 w-32 h-32 bg-blue-400 rotate-90"
         style={{
           clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)",
         }}
       />
       {/* RIGHT BLUE */}
       <div
-        className="absolute bottom-0 right-0 w-1/3 h-28 bg-blue-500 flex items-end justify-end p-4 text-white"
-        style={{
-          clipPath: "polygon(0 100%, 100% 30%, 100% 100%)",
-        }}
+        className="absolute bottom-2 -right-20 w-4/6 h-80 bg-blue-400 flex items-end justify-end p-4 text-white"
+        style={{ clipPath: "url(#Triangle)" }}
       >
-        <div className="text-right">
+        <div className="text-right pr-29 pb-12">
           <p className="text-sm tracking-widest">2026</p>
           <h2 className="text-xl font-bold">JANUARY</h2>
         </div>

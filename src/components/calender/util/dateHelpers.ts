@@ -5,7 +5,8 @@ export const getDaysInMonth = (year: number, month: number) => {
 };
 
 export const getFirstDayOfMonth = (year: number, month: number) => {
-  return new Date(year, month, 1).getDay(); // 0 = Sunday
+  const day = new Date(year, month, 1).getDay();
+  return (day === 0 ? 6 : day - 1); 
 };
 
 export const generateCalendarDays = (year: number, month: number) => {
