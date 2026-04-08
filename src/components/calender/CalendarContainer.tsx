@@ -1,13 +1,11 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import type { Variants } from "framer-motion";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import CalendarHeader from "./CalenderHeader";
 import CalendarGrid from "./CalenderGrid";
 import NotesPanel from "./NotesPanel";
 import { useDateRange } from "./hooks/useDateRange";
 import calendertop from "/Images/calendertop.png";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-
 
 type CalendarState = [number, number, number];
 
@@ -28,84 +26,121 @@ export default function CalendarContainer() {
     ]);
   };
 
-  const curlVariants: Variants = {
+  /**
+   * REALISTIC PAGE FLIP ANIMATION
+   * Focuses on "Mass" and "Damping" to simulate heavy paper weight.
+   */
+  const variants: Variants = {
     enter: (direction: number) => ({
-      rotateX: direction < 0 ? -110 : 0,
-      scaleY: direction < 0 ? 0.9 : 1,
-      y: direction < 0 ? -20 : 0,
-      opacity: 0,
-      filter: "brightness(1)",
+      // If going back (prev), start flipped up and drop down
+      rotateX: direction < 0 ? -120 : 0,
+      // If going forward (next), start slightly smaller and darker (underneath)
+      scale: direction > 0 ? 0.96 : 1,
+      opacity: direction > 0 ? 0.5 : 1,
+      zIndex: 0,
     }),
     center: {
       rotateX: 0,
-      scaleY: 1,
-      y: 0,
+      scale: 1,
       opacity: 1,
-      filter: "brightness(1)",
+      zIndex: 1,
       transition: {
-        type: "spring",
-        stiffness: 40, 
-        damping: 12,
-        mass: 1,
+        rotateX: {
+          type: "spring",
+          stiffness: 25, // Lower stiffness = slower movement
+          damping: 18, // Higher damping = smoother, less "bouncy"
+          mass: 1.2, // More mass = feels like heavy cardstock paper
+        },
+        scale: { duration: 0.8, ease: "circOut" },
+        opacity: { duration: 0.6 },
       },
     },
     exit: (direction: number) => ({
-      rotateX: direction > 0 ? -110 : 0, 
-      scaleY: direction > 0 ? 0.85 : 1, 
-      y: direction > 0 ? -10 : 20, 
-      opacity: direction > 0 ? 0 : 0,
-      filter: "brightness(0.6)", 
+      // When going Next, the current page flips UP and stays on top
+      rotateX: direction > 0 ? -140 : 20,
+      opacity: 0,
+      zIndex: direction > 0 ? 50 : 0, // Keep exiting page on top during flip
       transition: {
-        duration: 0.6,
-        ease: [0.45, 0.05, 0.55, 0.95], 
+        rotateX: {
+          type: "spring",
+          stiffness: 22, // Very slow lift
+          damping: 15,
+          mass: 1.5,
+        },
+        opacity: { duration: 0.5, delay: 0.2 }, // Fade out slowly as it clears the binder
       },
     }),
   };
-
+  
   return (
-    <div className="w-full min-h-screen bg-neutral-300 flex justify-center items-start pt-20 sm:pt-28 relative overflow-hidden">
-      {/* Wall Texture/Background Shadow */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(0,0,0,0.05)_0%,transparent_70%)]"></div>
+    <div className="w-full min-h-screen bg-[#cacaca] flex justify-center items-start pt-20 sm:pt-32 relative overflow-hidden">
+      {/* Lighting & Depth */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/20 pointer-events-none" />
 
-      <div className="relative w-[95%] max-w-xl">
-        {/* The Spiral Hanger (Static) */}
-        <div className="absolute left-1/2 -translate-x-1/2 top-3 md:top-4 -translate-y-[70%] w-[90%] z-[100] drop-shadow-xl">
-          <img
-            src={calendertop}
-            alt="calendar-top"
-            className="w-full pointer-events-none select-none"
-          />
+      <div className="relative w-[95%] max-w-2xl group">
+        {/* NAVIGATION BUTTONS - Floating "Pro" Style */}
+        <div className="absolute top-1/2 -translate-y-1/2 -left-16 lg:-left-24 z-[150]">
+          <button
+            onClick={() => paginate(-1)}
+            className="p-4 bg-white/80 hover:bg-white text-gray-800 rounded-full shadow-xl transition-all hover:scale-110 active:scale-95 group/btn border border-white/50 backdrop-blur-sm"
+          >
+            <ChevronLeft
+              size={32}
+              className="group-hover/btn:-translate-x-1 transition-transform"
+            />
+          </button>
         </div>
 
-        {/* The Calendar Body */}
+        <div className="absolute top-1/2 -translate-y-1/2 -right-16 lg:-right-24 z-[150]">
+          <button
+            onClick={() => paginate(1)}
+            className="p-4 bg-white/80 hover:bg-white text-gray-800 rounded-full shadow-xl transition-all hover:scale-110 active:scale-95 group/btn border border-white/50 backdrop-blur-sm"
+          >
+            <ChevronRight
+              size={32}
+              className="group-hover/btn:translate-x-1 transition-transform"
+            />
+          </button>
+        </div>
+
+        {/* STATIC BINDER TOP */}
+
+        {/* CALENDAR MAIN BODY */}
         <div
-          className="w-full bg-[#fdfdfd] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] rounded-b-sm relative"
+          className="relative w-full bg-white rounded-b-xl shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)]"
           style={{ perspective: "2500px" }}
         >
-          <div className="relative z-[110] flex items-center justify-between px-6 py-4 bg-white/90 border-b border-gray-200">
-            <button
-              onClick={() => paginate(-1)}
-              className="hover:scale-125 transition-transform cursor-pointer"
+            <div className="absolute left-1/2 -translate-x-1/2 top-6 sm:top-11 -translate-y-[82%] w-[94%] z-[200]">
+              <img
+                src={calendertop}
+                alt="binder"
+                className="w-full drop-shadow-[0_15px_15px_rgba(0,0,0,0.4)]"
+              />
+            </div>
+          {/* Header Area */}
+          <div className="relative z-[100] bg-white border-b border-gray-100 p-2 flex flex-col items-center rounded-t-xl">
+            <motion.span
+              key={year}
+              initial={{ y: 10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              className="text-sm font-black tracking-[0.3em] text-gray-400 uppercase"
             >
-              <ChevronLeft size={24} />
-            </button>
-
-            <div className="font-serif text-2xl font-bold italic text-gray-700">
+              {year}
+            </motion.span>
+            <motion.h2
+              key={month}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="text-3xl font-serif italic font-bold text-gray-800 mt-1"
+            >
               {new Date(year, month).toLocaleString("default", {
                 month: "long",
-              })}{" "}
-              {year}
-            </div>
-
-            <button
-              onClick={() => paginate(1)}
-              className="hover:scale-125 transition-transform cursor-pointer"
-            >
-              <ChevronRight size={24} />
-            </button>
+              })}
+            </motion.h2>
           </div>
-          {/* Animated Page Stack */}
-          <div className="relative min-h-[550px] overflow-visible">
+
+          {/* ANIMATED PAGES CONTAINER */}
+          <div className="relative min-h-[850px] overflow-visible">
             <AnimatePresence
               initial={false}
               custom={direction}
@@ -114,40 +149,29 @@ export default function CalendarContainer() {
               <motion.div
                 key={`${month}-${year}`}
                 custom={direction}
-                variants={curlVariants}
+                variants={variants}
                 initial="enter"
                 animate="center"
                 exit="exit"
                 style={{
                   transformOrigin: "top center",
-                  width: "100%",
                   backfaceVisibility: "hidden",
-                  transformStyle: "preserve-3d",
                 }}
-                className="bg-white shadow-inner"
+                className="w-full bg-white shadow-[0_10px_30px_rgba(0,0,0,0.05)] p-2 md:p-4"
               >
-                {/* Simulated Paper Shadow (Inner Shadow that appears as it curls) */}
-                <motion.div
-                  className="absolute inset-0 pointer-events-none z-50"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 0 }}
-                  exit={{
-                    opacity: 0.4,
-                    background:
-                      "linear-gradient(to bottom, transparent 50%, black 100%)",
-                  }}
-                />
+                {/* Paper Shading Overlay */}
+                <motion.div className="absolute inset-0 pointer-events-none z-50 bg-gradient-to-b from-black/0 via-black/0 to-black/[0.02]" />
 
+                {/* Calendar Content */}
                 <CalendarHeader year={year} month={month} />
-
-                <div className="flex flex-col lg:flex-row">
-                  <div className="w-full lg:w-[260px] border-r border-gray-100 p-4">
+                <div className="flex flex-col lg:flex-row mt-6 gap-6">
+                  <div className="w-full lg:w-48 border-r border-gray-50 pr-4">
                     <NotesPanel
                       startDate={range.startDate}
                       endDate={range.endDate}
                     />
                   </div>
-                  <div className="flex-1 p-2">
+                  <div className="flex-1">
                     <CalendarGrid
                       startDate={range.startDate}
                       endDate={range.endDate}
@@ -159,19 +183,22 @@ export default function CalendarContainer() {
                   </div>
                 </div>
 
-                {/* Subtle Page Edge Shadow */}
-                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-black/10"></div>
+                {/* The "Back" of the paper (only visible during flip) */}
+                <div
+                  className="absolute inset-0 bg-gray-100 z-[-1]"
+                  style={{ transform: "rotateX(180deg)" }}
+                />
               </motion.div>
             </AnimatePresence>
 
-            {/* Background "Ghost" Pages (Simulates the thickness of the calendar) */}
-            <div className="absolute inset-0 bg-white -z-10 translate-y-1 translate-z-[-1px] border-b border-gray-300"></div>
-            <div className="absolute inset-0 bg-white -z-20 translate-y-2 translate-z-[-2px] border-b border-gray-400"></div>
+            {/* PHYSICAL STACK DEPTH (Background Pages) */}
+            <div className="absolute inset-x-2 -bottom-2 h-full bg-white border border-gray-200 -z-10 rounded-b-xl shadow-md" />
+            <div className="absolute inset-x-4 -bottom-4 h-full bg-white border border-gray-300 -z-20 rounded-b-xl shadow-sm" />
           </div>
         </div>
 
-        {/* Real-world floor shadow */}
-        <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 w-[110%] h-20 bg-black/10 blur-[60px] rounded-[100%] -z-50"></div>
+        {/* Floor Shadow */}
+        <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 w-[110%] h-16 bg-black/20 blur-[50px] rounded-[100%] -z-50" />
       </div>
     </div>
   );
