@@ -44,7 +44,7 @@ export default function NotesPanel({
         {startDate
           ? `${startDate.toDateString()} ${
               endDate
-                ? `→ ${endDate.toDateString()} ,  ${Math.ceil(
+                ? `→ ${endDate.toDateString()} , ${Math.ceil(
                     (endDate.getTime() - startDate.getTime()) /
                       (1000 * 60 * 60 * 24),
                   )} days`
