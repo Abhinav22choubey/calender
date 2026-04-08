@@ -6,6 +6,7 @@ interface Props {
   month: number;
   startDate: Date | null;
   endDate: Date | null;
+  accent: string;
   handleDateClick: (date: Date) => void;
   isInRange: (date: Date) => boolean;
 }
@@ -13,9 +14,11 @@ interface Props {
 export default function CalendarGrid({
   startDate,
   endDate,
-  year,month,
+  year,
+  month,
   handleDateClick,
   isInRange,
+  accent,
 }: Props) {
   const days = generateCalendarDays(year, month);
 
@@ -23,7 +26,12 @@ export default function CalendarGrid({
     <div className="p-4">
       <div className="grid grid-cols-7 gap-2 text-center text-sm font-medium text-gray-500 mb-2">
         {["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"].map((d, idx) => (
-          <div className={idx > 4 ? "text-blue-500" : ""} key={d}>
+          <div
+            key={d}
+            style={{
+              color: idx > 4 ? accent : undefined,
+            }}
+          >
             {d}
           </div>
         ))}
@@ -40,6 +48,7 @@ export default function CalendarGrid({
               endDate={endDate}
               isInRange={isInRange(date)}
               onClick={() => handleDateClick(date)}
+              accent={accent}
             />
           ) : (
             <div key={idx} /> // empty cell

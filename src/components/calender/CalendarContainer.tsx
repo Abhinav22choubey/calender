@@ -23,7 +23,20 @@ const bodyGradients = [
   "from-gray-200 via-white to-gray-300",
   "from-blue-200 via-white to-indigo-300",
 ];
-
+const accentColors = [
+  "#3b82f6",
+  "#ec4899",
+  "#22c55e",
+  "#f97316",
+  "#ef4444",
+  "#06b6d4",
+  "#10b981",
+  "#8b5cf6",
+  "#f59e0b",
+  "#dc2626",
+  "#6b7280",
+  "#6366f1",
+];
 export default function CalendarContainer() {
   const range = useDateRange();
 
@@ -158,6 +171,7 @@ export default function CalendarContainer() {
                         month={month}
                         handleDateClick={range.handleDateClick}
                         isInRange={range.isInRange}
+                          accent={accentColors[month]}
                       />
                     </div>
                   </div>
