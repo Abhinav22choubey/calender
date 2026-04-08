@@ -13,10 +13,11 @@ interface Props {
 export default function CalendarGrid({
   startDate,
   endDate,
+  year,month,
   handleDateClick,
   isInRange,
 }: Props) {
-  const days = generateCalendarDays(2026, 1);
+  const days = generateCalendarDays(year, month);
 
   return (
     <div className="p-4">

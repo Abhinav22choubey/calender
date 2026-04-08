@@ -1,7 +1,17 @@
-export default function CalendarHeader() {
+type Props = {
+  year: number;
+  month: number;
+};
+
+export default function CalendarHeader({ year, month }: Props) {
+  const monthName = new Date(year, month).toLocaleString("default", {
+    month: "long",
+  });
+
   return (
     <div className="relative w-full h-96 overflow-hidden">
-      {/* SVG clip (triangle with rounded tip) */}
+      
+      {/* SVG clip */}
       <svg width="0" height="0">
         <defs>
           <clipPath id="Triangle" clipPathUnits="objectBoundingBox">
@@ -21,7 +31,6 @@ export default function CalendarHeader() {
       </svg>
 
       {/* IMAGE */}
-      {/* IMAGE */}
       <div
         className="w-full z-10 h-full overflow-hidden shadow-xl relative"
         style={{ clipPath: "url(#Triangle)" }}
@@ -39,14 +48,22 @@ export default function CalendarHeader() {
           clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)",
         }}
       />
+
       {/* RIGHT BLUE */}
       <div
         className="absolute bottom-2 -right-20 w-4/6 h-80 bg-blue-400 flex items-end justify-end p-4 text-white"
         style={{ clipPath: "url(#Triangle)" }}
       >
         <div className="text-right pr-29 pb-12">
-          <p className="text-sm tracking-widest">2026</p>
-          <h2 className="text-xl font-bold">JANUARY</h2>
+          
+          {/* ✅ Dynamic YEAR */}
+          <p className="text-sm tracking-widest">{year}</p>
+
+          {/* ✅ Dynamic MONTH */}
+          <h2 className="text-xl font-bold uppercase">
+            {monthName}
+          </h2>
+
         </div>
       </div>
     </div>

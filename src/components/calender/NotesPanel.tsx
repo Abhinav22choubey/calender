@@ -13,9 +13,7 @@ export default function NotesPanel({
     if (!startDate) return null;
 
     const start = startDate.toISOString().split("T")[0];
-    const end = endDate
-      ? endDate.toISOString().split("T")[0]
-      : "single";
+    const end = endDate ? endDate.toISOString().split("T")[0] : "single";
 
     return `notes_${start}_${end}`;
   };
@@ -45,7 +43,12 @@ export default function NotesPanel({
       <div className="text-sm text-gray-500 mb-2">
         {startDate
           ? `${startDate.toDateString()} ${
-              endDate ? `→ ${endDate.toDateString()}` : ""
+              endDate
+                ? `→ ${endDate.toDateString()} ,  ${Math.ceil(
+                    (endDate.getTime() - startDate.getTime()) /
+                      (1000 * 60 * 60 * 24),
+                  )} days`
+                : ""
             }`
           : "Select a date range"}
       </div>
