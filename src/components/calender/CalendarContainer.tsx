@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { motion, AnimatePresence, type Variants } from "framer-motion";
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence, type Variants, useDragControls } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import CalendarHeader from "./CalenderHeader";
 import CalendarGrid from "./CalenderGrid";
@@ -25,18 +25,8 @@ const bodyGradients = [
 ];
 
 const accentColors = [
-  "#3b82f6",
-  "#ec4899",
-  "#22c55e",
-  "#f97316",
-  "#ef4444",
-  "#06b6d4",
-  "#10b981",
-  "#8b5cf6",
-  "#f59e0b",
-  "#dc2626",
-  "#6b7280",
-  "#6366f1",
+  "#3b82f6", "#ec4899", "#22c55e", "#f97316", "#ef4444", "#06b6d4",
+  "#10b981", "#8b5cf6", "#f59e0b", "#dc2626", "#6b7280", "#6366f1",
 ];
 
 export default function CalendarContainer() {
@@ -57,6 +47,20 @@ export default function CalendarContainer() {
     ]);
   };
 
+  // --- KEYBOARD SUPPORT ---
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight" || e.key === "ArrowUp") {
+        paginate(1);
+      } else if (e.key === "ArrowLeft" || e.key === "ArrowDown") {
+        paginate(-1);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [month, year]); // Re-bind when state changes to ensure paginate has latest scope
+
   const variants: Variants = {
     enter: (direction: number) => ({
       rotateX: direction < 0 ? -120 : 0,
@@ -70,12 +74,7 @@ export default function CalendarContainer() {
       opacity: 1,
       zIndex: 1,
       transition: {
-        rotateX: {
-          type: "spring",
-          stiffness: 25,
-          damping: 18,
-          mass: 1.2,
-        },
+        rotateX: { type: "spring", stiffness: 25, damping: 18, mass: 1.2 },
         scale: { duration: 0.8, ease: "circOut" },
         opacity: { duration: 0.6 },
       },
@@ -85,26 +84,35 @@ export default function CalendarContainer() {
       opacity: 0,
       zIndex: direction > 0 ? 50 : 0,
       transition: {
-        rotateX: {
-          type: "spring",
-          stiffness: 22,
-          damping: 15,
-          mass: 1.5,
-        },
+        rotateX: { type: "spring", stiffness: 22, damping: 15, mass: 1.5 },
         opacity: { duration: 0.5, delay: 0.2 },
       },
     }),
   };
 
+  // --- SWIPE / DRAG HANDLER ---
+  const handleDragEnd = (event: any, info: any) => {
+    const swipeThreshold = 50; // Minimum pixels to trigger a page turn
+    const { offset, velocity } = info;
+
+    // Logic: Slide Right (positive x) OR Slide Up (negative y) -> Next
+    if (offset.x > swipeThreshold || offset.y < -swipeThreshold) {
+      paginate(1);
+    } 
+    // Logic: Slide Left (negative x) OR Slide Down (positive y) -> Previous
+    else if (offset.x < -swipeThreshold || offset.y > swipeThreshold) {
+      paginate(-1);
+    }
+  };
+
   return (
     <div
-      className="w-full min-h-full pb-80 mb-10 bg-[#d6d6d6] flex justify-center items-start pt-20 sm:pt-32 relative overflow-visible"
+      className="w-full min-h-full pb-80 mb-10 bg-[#d6d6d6] flex justify-center items-start pt-20 sm:pt-32 relative overflow-hidden"
       style={{
         backgroundImage:
           "radial-gradient(circle at 20% 20%, #f0f0f0 0%, #d6d6d6 50%, #bcbcbc 100%)",
       }}
     >
-      {/* Texture */}
       <div
         className="absolute inset-0 opacity-[0.03] pointer-events-none"
         style={{
@@ -114,25 +122,24 @@ export default function CalendarContainer() {
       />
 
       <div className="relative w-[95%] max-w-2xl group">
-
-        {/* NAV */}
-        <div className="absolute top-1/2 -translate-y-1/2 -left-16 lg:-left-24 z-[150]">
+        {/* NAV BUTTONS (Hidden on small mobile if desired, but kept for desktop)
+        <div className="hidden md:block absolute top-1/2 -translate-y-1/2 -left-16 lg:-left-24 z-[150]">
           <button
             onClick={() => paginate(-1)}
             className="p-4 bg-white/80 hover:bg-white rounded-full shadow-lg hover:shadow-xl transition-all"
           >
             <ChevronLeft size={32} />
           </button>
-        </div>
-
-        <div className="absolute top-1/2 -translate-y-1/2 -right-16 lg:-right-24 z-[150]">
+        </div> */}
+{/* 
+        <div className="hidden md:block absolute top-1/2 -translate-y-1/2 -right-16 lg:-right-24 z-[150]">
           <button
             onClick={() => paginate(1)}
             className="p-4 bg-white/80 hover:bg-white rounded-full shadow-lg hover:shadow-xl transition-all"
           >
             <ChevronRight size={32} />
           </button>
-        </div>
+        </div> */}
 
         {/* BODY */}
         <div
@@ -144,15 +151,16 @@ export default function CalendarContainer() {
           }}
         >
           {/* Binder */}
-          <div className="absolute left-1/2 -translate-x-1/2 top-6 sm:top-11 -translate-y-[82%] w-[94%] z-[200]">
+          <div className="absolute left-1/2 -translate-x-1/2 top-6 sm:top-11 -translate-y-[82%] w-[94%] z-[200] pointer-events-none">
             <img
               src={calendertop}
+              alt="calendar binder"
               className="w-full drop-shadow-[5px_10px_8px_rgba(0,0,0,0.3)]"
             />
           </div>
 
           {/* PAGES */}
-          <div className="relative h-fit overflow-visible pb-8">
+          <div className="relative h-fit overflow-visible pb-8 touch-none">
             <AnimatePresence initial={false} custom={direction} mode="popLayout">
               <motion.div
                 key={`${month}-${year}`}
@@ -161,11 +169,19 @@ export default function CalendarContainer() {
                 initial="enter"
                 animate="center"
                 exit="exit"
+                // --- GESTURE PROPS ---
+                drag
+                dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+                dragElastic={0.1}
+                onDragEnd={handleDragEnd}
+                // --------------------
                 style={{
                   transformOrigin: "top center",
                   backfaceVisibility: "hidden",
                   transformStyle: "preserve-3d",
+                  cursor: "grab",
                 }}
+                whileTap={{ cursor: "grabbing" }}
                 className="w-full relative h-fit overflow-visible rounded-sm transform-gpu"
               >
                 {/* BACKGROUND */}
@@ -198,7 +214,7 @@ export default function CalendarContainer() {
                     </div>
                   </div>
 
-                  {/* BACK SIDE */}
+                  {/* BACK SIDE (For 3D Effect) */}
                   <div
                     className={`absolute inset-0 bg-gradient-to-br ${bodyGradients[month]} z-[-1]`}
                     style={{ transform: "rotateX(180deg)" }}
@@ -207,7 +223,7 @@ export default function CalendarContainer() {
               </motion.div>
             </AnimatePresence>
 
-            {/* STACK */}
+            {/* STACK EFFECT */}
             <div className="absolute inset-x-2 -bottom-2 h-full bg-[#fcfcfc] border-r border-b border-black/10 -z-10 rounded-b-sm" />
             <div className="absolute inset-x-4 -bottom-4 h-full bg-[#f5f5f5] border-r border-b border-black/10 -z-20 rounded-b-sm" />
           </div>
