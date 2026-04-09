@@ -92,6 +92,8 @@ components/calender/
 ├── DayCell.tsx                # Individual date cell
 ├── NotesPanel.tsx             # Notes system
 
+
+```
 ## 📦 Installation & Setup
 
 ### Clone the repository
