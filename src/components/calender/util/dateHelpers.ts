@@ -32,3 +32,21 @@ export const isSameDay = (d1: Date | null, d2: Date | null) => {
   if (!d1 || !d2) return false;
   return d1.toDateString() === d2.toDateString();
 };
+
+export const hasNoteForDate = (date: Date) => {
+  const day = date.toISOString().split("T")[0];
+
+  // Check all keys in localStorage
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (!key) continue;
+
+    // match notes_YYYY-MM-DD_*
+    if (key.startsWith(`notes_${day}`)) {
+      const value = localStorage.getItem(key);
+      if (value && value.trim().length > 0) return true;
+    }
+  }
+
+  return false;
+};

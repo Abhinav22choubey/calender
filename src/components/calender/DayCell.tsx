@@ -5,6 +5,7 @@ interface Props {
   endDate: Date | null;
   isInRange: boolean;
   accent: string;
+  hasNote: boolean;
   onClick: () => void;
 }
 
@@ -15,6 +16,7 @@ export default function DayCell({
   endDate,
   isInRange,
   accent,
+  hasNote,
   onClick,
 }: Props) {
   const isStart = startDate?.toDateString() === date.toDateString();
@@ -35,30 +37,33 @@ export default function DayCell({
       `}
       style={{
         backgroundColor:
-          isStart || isEnd
-            ? accent
-            : isInRange
-            ? `${accent}30`
-            : undefined,
+          isStart || isEnd ? accent : isInRange ? `${accent}30` : undefined,
 
         color:
           isStart || isEnd
             ? "white"
             : isWeekend && !isStart && !isEnd
-            ? accent
-            : undefined,
+              ? accent
+              : undefined,
       }}
     >
-      <div
-        className="w-9 h-9 flex items-center justify-center rounded-full"
-        style={{
-          backgroundColor:
-            isToday && !isStart && !isEnd ? accent : "transparent",
-          color:
-            isToday && !isStart && !isEnd ? "white" : undefined,
-        }}
-      >
-        {date.getDate()}
+      <div className="relative w-9 h-9 flex items-center justify-center rounded-full">
+        {/* Date */}
+        <span
+          style={{
+            backgroundColor:
+              isToday && !isStart && !isEnd ? accent : "transparent",
+            color: isToday && !isStart && !isEnd ? "white" : undefined,
+          }}
+          className="w-full h-full flex items-center justify-center rounded-full"
+        >
+          {date.getDate()}
+        </span>
+
+        {/* 🔴 SMALL BLACK DOT */}
+        {hasNote && (
+          <span className="absolute bottom-0.5 w-1.5 h-1.5 bg-black rounded-full" />
+        )}
       </div>
     </button>
   );

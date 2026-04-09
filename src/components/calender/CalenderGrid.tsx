@@ -1,6 +1,7 @@
 // CalendarGrid.tsx
 import DayCell from "./DayCell";
 import { generateCalendarDays } from "./util/dateHelpers";
+import { hasNoteForDate } from "./util/dateHelpers";
 interface Props {
   year: number;
   month: number;
@@ -49,6 +50,7 @@ export default function CalendarGrid({
               isInRange={isInRange(date)}
               onClick={() => handleDateClick(date)}
               accent={accent}
+               hasNote={hasNoteForDate(date)}
             />
           ) : (
             <div key={idx} /> // empty cell
