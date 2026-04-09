@@ -1,73 +1,121 @@
-# React + TypeScript + Vite
+# 📅 Modern Calendar App: Interactive Date Range Picker + Notes
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A sleek, performance-driven calendar application built with **React, TypeScript, and Tailwind CSS**. This project focuses on a "State-Driven UI" philosophy, featuring highly fluid navigation logic and a robust date-range selection system.
 
-Currently, two official plugins are available:
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
+🔗 **[Live Demo Link Here](https://calender-psi-two.vercel.app/)** 
 
-## React Compiler
+## 🎥 Video Demonstration
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+A short walkthrough showcasing the core features of the calendar component:
 
-## Expanding the ESLint configuration
+🔗 **Watch Demo:** https://youtu.be/gwHu6XfsfDI
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 📌 What’s Covered:
+- 📅 Date range selection (start → end → reset)
+- 🧠 Notes creation & persistence (localStorage)
+- 🎬 Smooth animations & transitions
+- 📱 Responsive behavior (desktop → mobile)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 🚀 Core Philosophy
+This project is designed around **state-driven UI**, where visual behavior is a direct derivative of the date state. Logic is centralized in helper functions to keep components clean, modular, and predictable.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+---
+
+## 🎬 Animation & Navigation Logic
+
+The core of the user experience is the fluid transition system powered by **Framer Motion**. The calendar differentiates between navigation types using a `direction` state.
+
+### ↔️ Horizontal Sliding (Month Navigation)
+When switching between months, the grid uses an **X-axis** translation.
+- **Logic:** The app calculates the index of the month. 
+- **Right Slide:** Moving to a future month sets a positive direction value, causing the new month to enter from the right and the old one to exit to the left.
+- **Left Slide:** Moving to a previous month reverses the coordinates.
+
+### ↕️ Vertical Sliding (Month/Page Navigation)
+For broader jumps (like changing Months or switching view layers), the calendar utilizes **Y-axis** translation.
+- **Logic:** Triggered by the Month selector.
+- **Up/Down Feel:** Gives the user a sense of "depth" or "scrolling" through time, distinguishing global changes (Years) from local changes (Months).
+
+### 🛠️ Framer Motion Implementation
+The implementation uses `AnimatePresence` with `custom` props:
+- **Variants:** Defined as `enter`, `center`, and `exit`.
+- **Dynamic Transition:** The `initial` and `exit` values are multiplied by the `direction` state variable, ensuring the animation always matches the user's intent.
+
+---
+
+## ✨ Functional Breakdown
+
+### 📆 1. Smart Calendar Grid
+- Generates a consistent **6x7 grid (42 cells)** using `generateCalendarDays`.
+- Includes overflow days from the previous and next months to ensure no layout shifts during transitions.
+
+### 🎯 2. Advanced Range Selection
+- **Intuitive UX:** First click sets the start, second click sets the end, and a third click resets the selection.
+- **Visual Feedback:** Real-time range highlighting and "in-between" states using pure CSS logic.
+
+### 🧠 3. Persistent Notes System
+- **Context-Aware:** Notes are tied to specific date ranges using a structured key format: `note-YYYY-MM-DD_to_YYYY-MM-DD`.
+- **Storage:** Uses `localStorage` for persistence without needing a database.
+- **Visual Indicators:** Date cells display a small dot indicator if they are part of a saved note range via the `hasNoteForDate()` helper.
+
+---
+
+## 🛠️ Tech Stack
+- **Framework:** React (Vite)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS
+- **Animations:** Framer Motion
+- **State Management:** React Hooks (useState, useMemo)
+
+---
+
+## 📂 Project Structure
+```text
+components/calender/
+
+├── hooks/
+│   └── useDateRange.ts        # Core range selection logic
+│
+├── util/
+│   └── dateHelpers.ts         # Calendar + date utilities
+│
+├── CalendarContainer.tsx      # Main controller (state holder)
+├── CalendarGrid.tsx           # Grid layout (42 cells)
+├── CalenderHeader.tsx         # Month navigation UI
+├── DayCell.tsx                # Individual date cell
+├── NotesPanel.tsx             # Notes system
+
+## 📦 Installation & Setup
+
+### Clone the repository
+```bash
+git clone https://github.com/Abhinav22choubey/calender.git
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Navigate to the directory
+```bash
+cd calender
 ```
+
+### Install dependencies
+```bash
+npm install
+```
+
+### Run the development server
+```bash
+npm run dev
+```
+
+---
+
+## 👨‍💻 Author
+
+**Abhinav Kumar Choubey**
