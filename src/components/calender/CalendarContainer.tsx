@@ -23,6 +23,7 @@ const bodyGradients = [
   "from-gray-200 via-white to-gray-300",
   "from-blue-200 via-white to-indigo-300",
 ];
+
 const accentColors = [
   "#3b82f6",
   "#ec4899",
@@ -37,6 +38,7 @@ const accentColors = [
   "#6b7280",
   "#6366f1",
 ];
+
 export default function CalendarContainer() {
   const range = useDateRange();
 
@@ -95,50 +97,63 @@ export default function CalendarContainer() {
   };
 
   return (
-    // WALL: Updated with a radial gradient to simulate a single light source from top-left
-    <div className="w-full min-h-screen mb-10 bg-[#d6d6d6] flex justify-center items-start pt-20 sm:pt-32 relative overflow-hidden"
+    <div
+      className="w-full min-h-full pb-80 mb-10 bg-[#d6d6d6] flex justify-center items-start pt-20 sm:pt-32 relative overflow-visible"
       style={{
-        backgroundImage: `radial-gradient(circle at 20% 20%, #f0f0f0 0%, #d6d6d6 50%, #bcbcbc 100%)`
-      }}>
-      
-      {/* Subtle Wall Texture Overlay */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: `url('https://www.transparenttextures.com/patterns/concrete-wall.png')` }} />
+        backgroundImage:
+          "radial-gradient(circle at 20% 20%, #f0f0f0 0%, #d6d6d6 50%, #bcbcbc 100%)",
+      }}
+    >
+      {/* Texture */}
+      <div
+        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage:
+            "url('https://www.transparenttextures.com/patterns/concrete-wall.png')",
+        }}
+      />
 
       <div className="relative w-[95%] max-w-2xl group">
 
-        {/* NAV BUTTONS */}
+        {/* NAV */}
         <div className="absolute top-1/2 -translate-y-1/2 -left-16 lg:-left-24 z-[150]">
-          <button onClick={() => paginate(-1)} className="p-4 bg-white/80 hover:bg-white rounded-full shadow-lg hover:shadow-xl transition-all">
+          <button
+            onClick={() => paginate(-1)}
+            className="p-4 bg-white/80 hover:bg-white rounded-full shadow-lg hover:shadow-xl transition-all"
+          >
             <ChevronLeft size={32} />
           </button>
         </div>
 
         <div className="absolute top-1/2 -translate-y-1/2 -right-16 lg:-right-24 z-[150]">
-          <button onClick={() => paginate(1)} className="p-4 bg-white/80 hover:bg-white rounded-full shadow-lg hover:shadow-xl transition-all">
+          <button
+            onClick={() => paginate(1)}
+            className="p-4 bg-white/80 hover:bg-white rounded-full shadow-lg hover:shadow-xl transition-all"
+          >
             <ChevronRight size={32} />
           </button>
         </div>
 
-        {/* CALENDAR BODY - Enhanced with 3D Cast Shadow */}
+        {/* BODY */}
         <div
           className="relative w-full bg-transparent"
-          style={{ 
+          style={{
             perspective: "2500px",
-            // Realistic multi-layered shadow casting to bottom-right
-            filter: "drop-shadow(15px 25px 10px rgba(0,0,0,0.1)) drop-shadow(40px 60px 40px rgba(0,0,0,0.15))"
+            filter:
+              "drop-shadow(15px 25px 10px rgba(0,0,0,0.1)) drop-shadow(40px 60px 40px rgba(0,0,0,0.15))",
           }}
         >
-
           {/* Binder */}
           <div className="absolute left-1/2 -translate-x-1/2 top-6 sm:top-11 -translate-y-[82%] w-[94%] z-[200]">
-            <img src={calendertop} className="w-full drop-shadow-[5px_10px_8px_rgba(0,0,0,0.3)]" />
+            <img
+              src={calendertop}
+              className="w-full drop-shadow-[5px_10px_8px_rgba(0,0,0,0.3)]"
+            />
           </div>
 
-
           {/* PAGES */}
-          <div className="relative min-h-[850px] overflow-visible">
+          <div className="relative h-fit overflow-visible pb-8">
             <AnimatePresence initial={false} custom={direction} mode="popLayout">
-
               <motion.div
                 key={`${month}-${year}`}
                 custom={direction}
@@ -146,21 +161,28 @@ export default function CalendarContainer() {
                 initial="enter"
                 animate="center"
                 exit="exit"
-                style={{ transformOrigin: "top center", backfaceVisibility: "hidden" }}
-                className="w-full relative min-h-[850px] overflow-hidden rounded-sm"
+                style={{
+                  transformOrigin: "top center",
+                  backfaceVisibility: "hidden",
+                  transformStyle: "preserve-3d",
+                }}
+                className="w-full relative h-fit overflow-visible rounded-sm transform-gpu"
               >
-
-                {/* GRADIENT MAIN BODY */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${bodyGradients[month]} transition-all duration-700`} />
+                {/* BACKGROUND */}
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${bodyGradients[month]} transition-all duration-700`}
+                />
 
                 {/* CONTENT */}
                 <div className="relative z-10 p-2 md:p-4">
-
                   <CalendarHeader year={year} month={month} />
 
                   <div className="flex flex-col lg:flex-row mt-6 gap-6">
                     <div className="w-full lg:w-48 border-r border-white/20 pr-4">
-                      <NotesPanel startDate={range.startDate} endDate={range.endDate} />
+                      <NotesPanel
+                        startDate={range.startDate}
+                        endDate={range.endDate}
+                      />
                     </div>
 
                     <div className="flex-1">
@@ -171,24 +193,21 @@ export default function CalendarContainer() {
                         month={month}
                         handleDateClick={range.handleDateClick}
                         isInRange={range.isInRange}
-                          accent={accentColors[month]}
+                        accent={accentColors[month]}
                       />
                     </div>
                   </div>
 
-                  {/* BACK SIDE ALSO GRADIENT */}
+                  {/* BACK SIDE */}
                   <div
                     className={`absolute inset-0 bg-gradient-to-br ${bodyGradients[month]} z-[-1]`}
                     style={{ transform: "rotateX(180deg)" }}
                   />
                 </div>
-
               </motion.div>
-
             </AnimatePresence>
 
-            {/* STACK (The thickness of the calendar) */}
-            {/* Added subtle border-right to show thickness on the shadow side */}
+            {/* STACK */}
             <div className="absolute inset-x-2 -bottom-2 h-full bg-[#fcfcfc] border-r border-b border-black/10 -z-10 rounded-b-sm" />
             <div className="absolute inset-x-4 -bottom-4 h-full bg-[#f5f5f5] border-r border-b border-black/10 -z-20 rounded-b-sm" />
           </div>
