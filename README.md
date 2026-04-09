@@ -1,5 +1,5 @@
 # 📅 Modern Calendar App: Interactive Date Range Picker + Notes
-
+Inspired by a physical wall calendar design, this application combines visual aesthetics with interactive functionality.
 A sleek, performance-driven calendar application built with **React, TypeScript, and Tailwind CSS**. This project focuses on a "State-Driven UI" philosophy, featuring highly fluid navigation logic and a robust date-range selection system.
 
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
@@ -25,6 +25,14 @@ A short walkthrough showcasing the core features of the calendar component:
 
 ## 🚀 Core Philosophy
 This project is designed around **state-driven UI**, where visual behavior is a direct derivative of the date state. Logic is centralized in helper functions to keep components clean, modular, and predictable.
+
+## ⚡ Key Features
+
+- 📅 Fixed 6x7 calendar grid (no layout shifts)
+- 🎯 Intelligent date range selection
+- 🧠 Persistent notes using localStorage
+- 🎬 Direction-aware animations
+- 📱 Fully responsive design
 
 ---
 
