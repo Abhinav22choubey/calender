@@ -96,7 +96,7 @@ export default function CalendarContainer() {
 
   return (
     // WALL: Updated with a radial gradient to simulate a single light source from top-left
-    <div className="w-full min-h-screen bg-[#d6d6d6] flex justify-center items-start pt-20 sm:pt-32 relative overflow-hidden"
+    <div className="w-full min-h-screen mb-10 bg-[#d6d6d6] flex justify-center items-start pt-20 sm:pt-32 relative overflow-hidden"
       style={{
         backgroundImage: `radial-gradient(circle at 20% 20%, #f0f0f0 0%, #d6d6d6 50%, #bcbcbc 100%)`
       }}>
